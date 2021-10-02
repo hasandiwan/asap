@@ -1,4 +1,5 @@
 from app import app, init_db
+import os
 import psycopg2
 import pytest
 import simplejson as json
@@ -20,15 +21,17 @@ def client():
 
     if HEROKU_URL:
         url = urlparse.urlparse(HEROKU_URL)
-        dbname=url.path[1:]
-        user=url.username
-        password=url.password
-        host=url.hostname
-        port=url.port
+        dbname = url.path[1:]
+        user = url.username
+        password = url.password
+        host = url.hostname
+        port = url.port
     else:
-        dbname = 'asap'
-        user = 'postgres'
-    with psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port) as con:
+        dbname = "asap"
+        user = "postgres"
+    with psycopg2.connect(
+        dbname=dbname, user=user, password=password, host=host, port=port
+    ) as con:
         with con.cursor() as cursor:
             cursor.execute(
                 "SELECT pid, pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = current_database() AND pid <> pg_backend_pid();drop table if exists tbl"
