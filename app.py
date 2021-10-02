@@ -1,17 +1,29 @@
 from flask import Flask, jsonify, request
+import os
 import psycopg2
 import requests
-import sqlite3
+import sqlite
+import urllib.parse as urlparse
 
 app = Flask(__name__)
 
 
-HEROKU_URL = '''"dbname=d9mh10tlos4hmf host=ec2-54-209-52-160.compute-1.amazonaws.com port=5432 user=lkilbjwglsmcin password=159cf3a15b8f979d8b85c00eea0c0f0ee495498782ccdfdefc7b42feb8a5dd07 sslmode=require'''
+HEROKU_URL = os.environ["DATABASE_URL"]
+
+
 def init_db():
     try:
         con = psycopg2.connect("dbname=asap user=hdiwan")
     except:
-        con = psycopg2.connect(HEROKU_URL)
+        url = urlparse.urlparse(HEROKU_URL)
+        dbname = url.path[1:]
+        user = url.username
+        password = url.password
+        host = url.hostname
+        port = url.port
+        con = psycopg2.connect(
+            dbname=dbname, user=user, password=password, host=host, port=port
+        )
 
     with con.cursor() as cursor:
         cursor.execute(
@@ -30,9 +42,7 @@ def postMemberId():
     d = request.json
     with con.cursor() as cursor:
         id_newest = str(
-            requests.get("https://units.d8u.us/random?length=16")
-            .json()
-            .get("integer")
+            requests.get("https://units.d8u.us/random?length=16").json().get("integer")
         ).replace("-", "")
         while True:
             cursor.execute("select id from tbl where id = %s", (id_newest,))

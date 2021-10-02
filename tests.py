@@ -10,7 +10,6 @@ import timeout_decorator
 def client():
     app.TESTING = True
     with app.test_client() as client:
-        print('in context')
         with app.app_context():
             init_db()
         yield client
@@ -40,4 +39,4 @@ def test_post(client):
 def test_get(client):
     rv = client.get("/member_id/validate?id=378282246310005")
     body = rv.json
-    assert 'body is invalid', json.loads(body).get("exists")
+    assert "body is invalid", json.loads(body).get("exists")
