@@ -37,7 +37,16 @@ def postMemberId():
     try:
         con = psycopg2.connect("dbname=asap user=hdiwan")
     except:
-        con = psycopg2.connect(HEROKU_URL)
+        url = urlparse.urlparse(HEROKU_URL)
+        dbname = url.path[1:]
+        user = url.username
+        password = url.password
+        host = url.hostname
+        port = url.port
+        con = psycopg2.connect(
+            dbname=dbname, user=user, password=password, host=host, port=port
+        )
+
     d = request.json
     with con.cursor() as cursor:
         id_newest = str(
@@ -67,7 +76,16 @@ def verify():
     try:
         con = psycopg2.connect("dbname=asap user=hdiwan")
     except:
-        con = psycopg2.connect(HEROKU_URL)
+        url = urlparse.urlparse(HEROKU_URL)
+        dbname = url.path[1:]
+        user = url.username
+        password = url.password
+        host = url.hostname
+        port = url.port
+        con = psycopg2.connect(
+            dbname=dbname, user=user, password=password, host=host, port=port
+        )
+
     query = request.args.get("cc")
     with con.cursor() as con:
         cursor.execute("select id from tbl where id = %s", (query,))
