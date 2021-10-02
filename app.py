@@ -48,9 +48,9 @@ def postMemberId():
                 d.get("country"),
             ),
         )
-     con.commit()
-     con.close()
-     return d
+    con.commit()
+    con.close()
+    return d
 
 
 @app.route("/member_id/verify", methods=["GET", "POST"])
