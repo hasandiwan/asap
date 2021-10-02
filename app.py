@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request
 import os
 import psycopg2
 import requests
-import sqlite
 import urllib.parse as urlparse
 
 app = Flask(__name__)
